@@ -17,6 +17,7 @@ public class CompareProtocol {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         try(Stream<String> lines = Files.lines(Paths.get(path))){
             ArrayList<Person> students = lines.map(l -> l.split(":"))
+                    .filter(s -> s[0].split(",").length >= 3)
                     .map(s -> new Person(s[0], Arrays.copyOfRange(s, 1, s.length - 1)))
                     .collect(Collectors.toCollection(ArrayList::new));
             String studentJSON = objectMapper.writeValueAsString(students);
@@ -36,7 +37,7 @@ public class CompareProtocol {
     }
 
     public static void main(String[] args){
-        String filePath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input.csv";
+        String filePath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input_v2.csv";
         convertToJSON(filePath);
     }
 

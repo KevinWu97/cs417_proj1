@@ -4,9 +4,11 @@ import java.util.stream.Collectors;
 
 public class Person {
     // fields
-    private String name;
+    private String lastName;
+    private String firstName;
     private ArrayList<Course> courseMarks;
-    private String rollNumber;
+    private String id;
+    private String email;
 
     private boolean isNumber(String s){
         boolean isNum = true;
@@ -21,20 +23,16 @@ public class Person {
 
     public Person(String nameID, String[] courses){
         String[] splitNameID = nameID.split(",");
-        if(splitNameID.length == 0){
-            this.name = null;
-            this.rollNumber = null;
-        }else if(splitNameID.length == 1){
-            if(isNumber(splitNameID[0])){
-                this.name = null;
-                this.rollNumber = splitNameID[0];
-            }else{
-                this.name = splitNameID[0];
-                this.rollNumber = null;
-            }
+        if(splitNameID.length < 3){
+            System.out.println(splitNameID[0]);
+        }
+        this.lastName = splitNameID[1];
+        this.firstName = splitNameID[2];
+        this.id = splitNameID[0];
+        if(splitNameID.length == 4) {
+            this.email = splitNameID[3];
         }else{
-            this.name = splitNameID[0];
-            this.rollNumber = splitNameID[1];
+            this.email = null;
         }
 
         this.courseMarks = Arrays.stream(courses)
@@ -43,24 +41,23 @@ public class Person {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRollNumber() {
-        return rollNumber;
-    }
-
-    public void setRollNumber(String rollNumber) {
-        this.rollNumber = rollNumber;
-    }
-
     public ArrayList<Course> getCourseMarks() { return courseMarks; }
 
     public void setCourseMarks(ArrayList<Course> courseMarks) { this.courseMarks = courseMarks; }
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public String getLastName() { return lastName; }
+
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getFirstName() { return firstName; }
+
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 }
