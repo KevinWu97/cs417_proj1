@@ -1,8 +1,6 @@
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Person {
     // fields
@@ -37,14 +35,13 @@ public class Person {
 
     @Override
     public String toString(){
-        System.out.println("do the la la la");
         String personString = this.getId() + "," + this.getFirstName() + "," +
                 this.getLastName() + ((this.getEmail() == null) ? "" : "," + this.getEmail());
-        String courseString = Stream.of(this.getCourseMarks())
-                .map(AbstractCollection::toString)
-                .collect(Collectors.joining(":"));
-        System.out.println(courseString);
-        return personString + ":" + courseString.substring(1, courseString.length() - 1);
+        StringBuilder courseString = new StringBuilder();
+        for(Course c : this.getCourseMarks()){
+            courseString.append(c.toString());
+        }
+        return personString + courseString;
     }
 
     public ArrayList<Course> getCourseMarks() { return courseMarks; }

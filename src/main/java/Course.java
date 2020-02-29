@@ -13,7 +13,7 @@ public class Course {
 
     @Override
     public String toString(){
-        return this.getCourseName() + "," + this.getCourseScore();
+        return ":" + this.getCourseName() + "," + this.getCourseScore();
     }
 
     public String getCourseName() {

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ public class CompareProtocol {
             }catch (IOException e){
                 e.printStackTrace();
             }
-            System.out.print(studentJSON);
+            // System.out.print(studentJSON);
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -41,25 +40,25 @@ public class CompareProtocol {
         try {
             ArrayList<Person> students = objectMapper.readValue(new File(jsonFile),
                     new TypeReference<ArrayList<Person>>(){});
-            String outputString = Stream.of(students)
-                    .map(AbstractCollection::toString)
-                    .collect(Collectors.joining("\n"));
+            StringBuilder personString = new StringBuilder();
+            for(Person p : students){
+                personString.append(p.toString()).append("\n");
+            }
+
             try(BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile))){
-                bufferedWriter.write(outputString);
+                bufferedWriter.write(personString.toString());
             }catch (IOException e){
                 e.printStackTrace();
             }
-            // System.out.print(outputString);
+            // System.out.print(personString.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args){
-        /*
         String csvPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input_v2.csv";
         serializeToJSON(csvPath);
-         */
 
         String jsonPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\students.json";
         String csvWritePath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\deserialized.csv";
