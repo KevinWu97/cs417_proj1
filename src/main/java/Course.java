@@ -3,9 +3,17 @@ public class Course {
     private String courseName;
     private String courseScore;
 
+    // Default constructor
+    public Course(){}
+
     public Course(String courseName, String courseScore){
         this.courseName = courseName;
         this.courseScore = courseScore;
+    }
+
+    @Override
+    public String toString(){
+        return this.getCourseName() + "," + this.getCourseScore();
     }
 
     public String getCourseName() {

@@ -1,10 +1,11 @@
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 
 public class CompareProtocol {
 
-    public static void convertToJSON(String path){
+    public static void serializeToJSON(String path){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         try(Stream<String> lines = Files.lines(Paths.get(path))){
@@ -29,16 +30,40 @@ public class CompareProtocol {
             }catch (IOException e){
                 e.printStackTrace();
             }
-
             System.out.print(studentJSON);
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
+    public static void deserializeFromJSON(String jsonFile, String outputFile){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ArrayList<Person> students = objectMapper.readValue(new File(jsonFile),
+                    new TypeReference<ArrayList<Person>>(){});
+            String outputString = Stream.of(students)
+                    .map(AbstractCollection::toString)
+                    .collect(Collectors.joining("\n"));
+            try(BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile))){
+                bufferedWriter.write(outputString);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            // System.out.print(outputString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args){
-        String filePath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input_v2.csv";
-        convertToJSON(filePath);
+        /*
+        String csvPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input_v2.csv";
+        serializeToJSON(csvPath);
+         */
+
+        String jsonPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\students.json";
+        String csvWritePath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\deserialized.csv";
+        deserializeFromJSON(jsonPath, csvWritePath);
     }
 
 }

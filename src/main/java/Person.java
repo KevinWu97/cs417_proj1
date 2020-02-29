@@ -1,6 +1,8 @@
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Person {
     // fields
@@ -10,16 +12,8 @@ public class Person {
     private String id;
     private String email;
 
-    private boolean isNumber(String s){
-        boolean isNum = true;
-        for(int i = 0; i < s.length(); i++){
-            if(!Character.isDigit(s.charAt(i))){
-                isNum = false;
-                break;
-            }
-        }
-        return isNum;
-    }
+    // Default constructor
+    public Person(){}
 
     public Person(String nameID, String[] courses){
         String[] splitNameID = nameID.split(",");
@@ -39,6 +33,18 @@ public class Person {
                 .map(s -> s.split(","))
                 .map(a -> new Course(a[0], a[1]))
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public String toString(){
+        System.out.println("do the la la la");
+        String personString = this.getId() + "," + this.getFirstName() + "," +
+                this.getLastName() + ((this.getEmail() == null) ? "" : "," + this.getEmail());
+        String courseString = Stream.of(this.getCourseMarks())
+                .map(AbstractCollection::toString)
+                .collect(Collectors.joining(":"));
+        System.out.println(courseString);
+        return personString + ":" + courseString.substring(1, courseString.length() - 1);
     }
 
     public ArrayList<Course> getCourseMarks() { return courseMarks; }
