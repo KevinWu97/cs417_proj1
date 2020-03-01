@@ -2,6 +2,9 @@
   <dictionary name="Kevin Wu">
     <words>
       <w>deserialized</w>
+      <w>grpc</w>
+      <w>protobuf</w>
+      <w>protoc</w>
     </words>
   </dictionary>
 </component>
