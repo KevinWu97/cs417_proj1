@@ -35,8 +35,8 @@ public class Person {
 
     @Override
     public String toString(){
-        String personString = this.getId() + "," + this.getFirstName() + "," +
-                this.getLastName() + ((this.getEmail() == null) ? "" : "," + this.getEmail());
+        String personString = this.getId() + "," + this.getLastName() + "," +
+                this.getFirstName() + ((this.getEmail() == null) ? "" : "," + this.getEmail());
         StringBuilder courseString = new StringBuilder();
         for(Course c : this.getCourseMarks()){
             courseString.append(c.toString());
