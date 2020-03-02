@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import proto.ProtocolDefn;
 import proto.ProtocolDefn.CourseMarks;
 import proto.ProtocolDefn.Student;
 
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
 
 public class CompareProtocol {
 
-    public static void serializeToJSON(String path){
+    public static void serializeToJSON(String path, String outputJson){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         try(Stream<String> lines = Files.lines(Paths.get(path))){
@@ -24,8 +25,7 @@ public class CompareProtocol {
                     .collect(Collectors.toCollection(ArrayList::new));
             String studentJSON = objectMapper.writeValueAsString(students);
 
-            try(FileWriter fileWriter = new FileWriter(
-                    "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\students.json")){
+            try(FileWriter fileWriter = new FileWriter(outputJson)){
                 fileWriter.write(studentJSON);
                 fileWriter.flush();
             }catch (IOException e){
@@ -56,56 +56,73 @@ public class CompareProtocol {
         }
     }
 
-    public static void serializeWithProtobuf(String inputFile) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream("result_protobuf.txt");
+    public static void serializeWithProtobuf(String inputFile, String resultPath) throws IOException {
+
+        FileOutputStream fileOutputStream = new FileOutputStream(resultPath);
         BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(inputFile));
-
         Stream<String> lines = bufferedReader.lines();
-        Student.Builder studentBuilder = Student.newBuilder();
-        CourseMarks.Builder courseBuilder = CourseMarks.newBuilder();
 
-        ArrayList<byte[]> students = lines
+        ArrayList<Student> students = lines
                 .map(s -> s.split(":"))
                 .filter(s -> s[0].split(",").length >= 3)
                 .map(s -> {
                     String[] personalInfoString = s[0].split(",");
+                    Student.Builder studentBuilder = Student.newBuilder();
                     studentBuilder.setId(personalInfoString[0])
                             .setLastname(personalInfoString[1])
                             .setFirstname(personalInfoString[2])
-                            .setEmail((personalInfoString.length > 3) ? personalInfoString[3] : null);
+                            .setEmail((personalInfoString.length > 3) ? personalInfoString[3] : "");
+
                     for(int i = 1; i < s.length; i++){
                         String[] courseInfoString = s[i].split(",");
                         studentBuilder.addMarks(
-                                courseBuilder.setName(courseInfoString[0])
-                                        .setScore(Integer.parseInt(courseInfoString[1]))
-                                        .build()
+                                CourseMarks.newBuilder().setName(courseInfoString[0])
+                                        .setScore(Integer.parseInt(courseInfoString[1])).build()
                         );
                     }
-                    return studentBuilder.build().toByteArray();
+                    return studentBuilder.build();
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        for(byte[] s : students){
-            fileOutputStream.write(s);
+        ProtocolDefn.Result.Builder resultBuilder = ProtocolDefn.Result.newBuilder();
+        ProtocolDefn.Result result = resultBuilder.addAllStudent(students).build();
+        result.writeTo(fileOutputStream);
+    }
+
+    public static void deserializeWithProtobuf(String protoFile, String recordPath) throws IOException {
+
+        FileOutputStream fileOutputStream = new FileOutputStream(recordPath);
+        FileInputStream fileInputStream = new FileInputStream(protoFile);
+
+        ProtocolDefn.Result res = ProtocolDefn.Result.parseFrom(fileInputStream);
+        StringBuilder studentInfoString = new StringBuilder();
+        for(Student s : res.getStudentList()){
+            String personalInfoString = s.getId() + "," + s.getLastname() + "," + s.getFirstname() +
+                    ((!s.getEmail().equals("")) ? "," + s.getEmail() : "");
+            String courseInfoString = s.getMarksList().stream()
+                    .map(c -> ":" + c.getName() + "," + c.getScore())
+                    .collect(Collectors.joining());
+            studentInfoString.append(personalInfoString).append(courseInfoString).append("\n");
         }
+        fileOutputStream.write(studentInfoString.toString().getBytes());
         fileOutputStream.close();
     }
 
-    public static void deserializeWithProtobuf(){
-
-    }
-
     public static void main(String[] args) throws IOException {
-        /*
-        String csvPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input_v2.csv";
-        serializeToJSON(csvPath);
+        String inputFile = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input.txt";
+        String jsonPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\result_json.json";
+        serializeToJSON(inputFile, jsonPath);
 
-        String jsonPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\students.json";
-        String csvWritePath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\deserialized.csv";
-        deserializeFromJSON(jsonPath, csvWritePath);
-         */
+        String jsonFile = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\result_json.json";
+        String outputPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\output_json.txt";
+        deserializeFromJSON(jsonFile, outputPath);
 
-        serializeWithProtobuf("C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input_v2.csv");
+        String resultPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\protobuf_text\\result_protobuf";
+        serializeWithProtobuf(inputFile, resultPath);
+
+        String protoFile = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\protobuf_text\\result_protobuf";
+        String recordPath = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\protobuf_text\\output_protobuf.txt";
+        deserializeWithProtobuf(protoFile, recordPath);
     }
 
 }

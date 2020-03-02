@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbf43a7b-6bbe-442e-8fe5-e8f4f5677dc5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Kevin_Wu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Kevin_Wu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs417-project-1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/cs417-project-1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CompareProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CompareProtocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv_files/deserialized.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv_files/input.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv_files/input_v2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv_files/test_input.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,6 +100,13 @@
       <workItem from="1582876456516" duration="19928000" />
       <workItem from="1582954291632" duration="1801000" />
       <workItem from="1582964152880" duration="24212000" />
+      <workItem from="1583037167035" duration="777000" />
+      <workItem from="1583038108695" duration="3152000" />
+      <workItem from="1583047172566" duration="2268000" />
+      <workItem from="1583049455452" duration="6284000" />
+      <workItem from="1583107234653" duration="4274000" />
+      <workItem from="1583117709477" duration="7877000" />
+      <workItem from="1583126024675" duration="1191000" />
     </task>
     <servers />
   </component>
@@ -107,10 +114,14 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="361" y="71" key="#Project_Structure" timestamp="1582867260744">
+    <state x="361" y="71" key="#Project_Structure" timestamp="1583124202338">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="71" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1582867260744" />
+    <state x="361" y="71" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1583124202338" />
+    <state x="512" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1583118828966">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="512" y="215" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1583118828966" />
     <state x="574" y="122" key="#com.intellij.ide.util.MemberChooser" timestamp="1582916831220">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -131,6 +142,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="449" y="140" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1536.824@0.0.1536.824" timestamp="1582941204258" />
+    <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1583036518706">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1583036518706" />
     <state x="499" y="167" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog" timestamp="1582869283937">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -143,22 +158,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1582954750765" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1583027284528">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1583126011593">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1583027284528" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1583027284528">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1583126011593" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1583126011593">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1583027284528" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1583027284528">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1583126011593" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1583126011593">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1583027284528" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1583027284528">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1583126011593" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1583126011593">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1583027284528" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1583126011593" />
     <state x="349" y="155" key="IDE.errors.dialog" timestamp="1582854954142">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -175,13 +190,17 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="584" y="190" key="chooseDestDirectoryDialog/0.0.1536.824@0.0.1536.824" timestamp="1583009825612" />
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1582964155032">
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1583126024799">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1582964155032" />
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1583126024799" />
     <state x="498" y="306" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1582869312096">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="498" y="306" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1536.824@0.0.1536.824" timestamp="1582869312096" />
+    <state x="425" y="187" key="run.anything.popup" timestamp="1583121761671">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1583121761671" />
   </component>
 </project>
