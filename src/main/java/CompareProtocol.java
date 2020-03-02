@@ -15,61 +15,81 @@ import java.util.stream.Stream;
 
 public class CompareProtocol {
 
-    public static long serializeToJSON(String path, String outputJson){
+    public static long[] serializeToJSON(String path, String outputJson) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        long messageSize = 0;
-        try(Stream<String> lines = Files.lines(Paths.get(path))){
-            ArrayList<Person> students = lines.map(l -> l.split(":"))
-                    .filter(s -> s[0].split(",").length >= 3)
-                    .map(s -> new Person(s[0], Arrays.copyOfRange(s, 1, s.length)))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            String studentJSON = objectMapper.writeValueAsString(students);
-            messageSize = studentJSON.getBytes().length;
 
-            try(FileWriter fileWriter = new FileWriter(outputJson)){
-                fileWriter.write(studentJSON);
-                fileWriter.flush();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        return messageSize;
+        // Index 0 is time
+        // Index 1 is size
+        // Index 2 is rate
+        long[] messageProperties = new long[3];
+
+        long startTime = System.currentTimeMillis();
+        Stream<String> lines = Files.lines(Paths.get(path));
+        ArrayList<Person> students = lines.map(l -> l.split(":"))
+                .filter(s -> s[0].split(",").length >= 3)
+                .map(s -> new Person(s[0], Arrays.copyOfRange(s, 1, s.length)))
+                .collect(Collectors.toCollection(ArrayList::new));
+        String studentJSON = objectMapper.writeValueAsString(students);
+
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        long messageSize = studentJSON.getBytes().length;
+
+        messageProperties[0] = totalTime;
+        messageProperties[1] = messageSize;
+        messageProperties[2] = messageSize/totalTime;
+
+        BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputJson));
+        bufferedWriter.write(studentJSON);
+        bufferedWriter.close();
+
+        return messageProperties;
     }
 
-    public static long deserializeFromJSON(String jsonFile, String outputFile){
+    public static long[] deserializeFromJSON(String jsonFile, String outputFile) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        long messageSize = 0;
-        try {
-            ArrayList<Person> students = objectMapper.readValue(new File(jsonFile),
-                    new TypeReference<ArrayList<Person>>(){});
-            StringBuilder personString = new StringBuilder();
-            for(Person p : students){
-                personString.append(p.toString()).append("\n");
-            }
+        ArrayList<Person> students = objectMapper.readValue(new File(jsonFile),
+                new TypeReference<ArrayList<Person>>(){});
 
-            String outputString = personString.toString();
-            messageSize = outputString.getBytes().length;
+        // Index 0 is time
+        // Index 1 is size
+        // Index 2 is rate
+        long[] messageProperties = new long[3];
 
-            try(BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile))){
-                bufferedWriter.write(outputString);
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        long startTime = System.currentTimeMillis();
+        StringBuilder personString = new StringBuilder();
+        for(Person p : students){
+            personString.append(p.toString()).append("\n");
         }
-        return messageSize;
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+
+        String outputString = personString.toString();
+        long messageSize = outputString.getBytes().length;
+
+        messageProperties[0] = totalTime;
+        messageProperties[1] = messageSize;
+        messageProperties[2] = messageSize/totalTime;
+
+        BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile));
+        bufferedWriter.write(outputString);
+        bufferedWriter.close();
+        return messageProperties;
     }
 
-    public static long serializeWithProtobuf(String inputFile, String resultPath) throws IOException {
+    public static long[] serializeWithProtobuf(String inputFile, String resultPath) throws IOException {
 
         FileOutputStream fileOutputStream = new FileOutputStream(resultPath);
         BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(inputFile));
         Stream<String> lines = bufferedReader.lines();
 
+        // Index 0 is time
+        // Index 1 is size
+        // Index 2 is rate
+        long[] messageProperties = new long[3];
+
+        long startTime = System.currentTimeMillis();
         ArrayList<Student> students = lines
                 .map(s -> s.split(":"))
                 .filter(s -> s[0].split(",").length >= 3)
@@ -94,16 +114,30 @@ public class CompareProtocol {
 
         ProtocolDefn.Result.Builder resultBuilder = ProtocolDefn.Result.newBuilder();
         ProtocolDefn.Result result = resultBuilder.addAllStudent(students).build();
+
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
         long messageSize = result.toByteArray().length;
+
+        messageProperties[0] = totalTime;
+        messageProperties[1] = messageSize;
+        messageProperties[2] = messageSize/totalTime;
+
         result.writeTo(fileOutputStream);
-        return messageSize;
+        return messageProperties;
     }
 
-    public static long deserializeWithProtobuf(String protoFile, String recordPath) throws IOException {
+    public static long[] deserializeWithProtobuf(String protoFile, String recordPath) throws IOException {
 
         FileOutputStream fileOutputStream = new FileOutputStream(recordPath);
         FileInputStream fileInputStream = new FileInputStream(protoFile);
 
+        // Index 0 is time
+        // Index 1 is size
+        // Index 2 is rate
+        long[] messageProperties = new long[3];
+
+        long startTime = System.currentTimeMillis();
         ProtocolDefn.Result res = ProtocolDefn.Result.parseFrom(fileInputStream);
         StringBuilder studentInfoString = new StringBuilder();
         for(Student s : res.getStudentList()){
@@ -114,13 +148,21 @@ public class CompareProtocol {
                     .collect(Collectors.joining());
             studentInfoString.append(personalInfoString).append(courseInfoString).append("\n");
         }
+
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
         long messageSize = studentInfoString.toString().getBytes().length;
+
+        messageProperties[0] = totalTime;
+        messageProperties[1] = messageSize;
+        messageProperties[2] = messageSize/totalTime;
+
         fileOutputStream.write(studentInfoString.toString().getBytes());
         fileOutputStream.close();
-        return messageSize;
+        return messageProperties;
     }
 
-    public static long[] getJsonMeasurements(String inputFile, String jsonFile, String outputFile){
+    public static long[] getJsonMeasurements(String inputFile, String jsonFile, String outputFile) throws IOException {
         // Index 0 is serialization time
         // Index 1 is serialization size
         // Index 2 is serialization rate
@@ -129,20 +171,15 @@ public class CompareProtocol {
         // Index 5 is deserialization rate
         long[] measurements = new long[6];
 
-        long serializeStartTime = System.currentTimeMillis();
-        long serializeSize = serializeToJSON(inputFile, jsonFile);
-        long serializeEndTime = System.currentTimeMillis();
+        long[] jsonSerializeProp = serializeToJSON(inputFile, jsonFile);
+        long[] jsonDeserializeProp = deserializeFromJSON(jsonFile, outputFile);
 
-        long deserializeStartTime = System.currentTimeMillis();
-        long deserializeSize = deserializeFromJSON(jsonFile, outputFile);
-        long deserializeEndTime = System.currentTimeMillis();
-
-        measurements[0] = serializeEndTime - serializeStartTime;
-        measurements[1] = serializeSize;
-        measurements[2] = measurements[1]/measurements[0];
-        measurements[3] = deserializeEndTime - deserializeStartTime;
-        measurements[4] = deserializeSize;
-        measurements[5] = measurements[4]/measurements[3];
+        measurements[0] = jsonSerializeProp[0];
+        measurements[1] = jsonSerializeProp[1];
+        measurements[2] = jsonSerializeProp[2];
+        measurements[3] = jsonDeserializeProp[0];
+        measurements[4] = jsonDeserializeProp[1];
+        measurements[5] = jsonDeserializeProp[2];
         return measurements;
     }
 
@@ -155,20 +192,15 @@ public class CompareProtocol {
         // Index 5 is deserialization rate
         long[] measurements = new long[6];
 
-        long serializeStartTime = System.currentTimeMillis();
-        long serializeSize = serializeWithProtobuf(inputFile, protoFile);
-        long serializeEndTime = System.currentTimeMillis();
+        long[] protoSerializeProp = serializeWithProtobuf(inputFile, protoFile);
+        long[] protoDeserializeProp = deserializeWithProtobuf(protoFile, outputFile);
 
-        long deserializeStartTime = System.currentTimeMillis();
-        long deserializeSize = deserializeWithProtobuf(protoFile, outputFile);
-        long deserializeEndTime = System.currentTimeMillis();
-
-        measurements[0] = serializeEndTime - serializeStartTime;
-        measurements[1] = serializeSize;
-        measurements[2] = measurements[1]/measurements[0];
-        measurements[3] = deserializeEndTime - deserializeStartTime;
-        measurements[4] = deserializeSize;
-        measurements[5] = measurements[4]/measurements[3];
+        measurements[0] = protoSerializeProp[0];
+        measurements[1] = protoSerializeProp[1];
+        measurements[2] = protoSerializeProp[2];
+        measurements[3] = protoDeserializeProp[0];
+        measurements[4] = protoDeserializeProp[1];
+        measurements[5] = protoDeserializeProp[2];
         return measurements;
     }
 
