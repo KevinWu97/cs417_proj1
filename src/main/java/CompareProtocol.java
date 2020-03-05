@@ -205,6 +205,7 @@ public class CompareProtocol {
     }
 
     public static void main(String[] args) throws IOException {
+
         String inputFile = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\csv_files\\input.txt";
 
         String jsonFile = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\json_files\\result.json";
@@ -212,6 +213,8 @@ public class CompareProtocol {
 
         String protoFile = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\protobuf_text\\result_protobuf";
         String outProto = "C:\\Users\\Kevin Wu\\IdeaProjects\\cs417-project-1\\protobuf_text\\output_protobuf.txt";
+
+        String[] units = {" ms", " bytes", " bytes/ms", " ms", " bytes", " bytes/ms"};
 
         long[] jsonMeasurements = getJsonMeasurements(inputFile, jsonFile, outJson);
         long[] protoMeasurements = getProtobufMeasurements(inputFile, protoFile, outProto);
@@ -227,7 +230,6 @@ public class CompareProtocol {
                 "Protobuf Deserialization Time is ",
                 "Protobuf Deserialization Size is ",
                 "Protobuf Deserialization Rate is "};
-        String[] units = {" ms", " bytes", " bytes/ms", " ms", " bytes", " bytes/ms"};
 
         for(int i = 0; i < jsonMeasurements.length; i++){
             System.out.println(prefixJson[i] + jsonMeasurements[i] + units[i]);
@@ -236,6 +238,34 @@ public class CompareProtocol {
         for(int i = 0; i < protoMeasurements.length; i++){
             System.out.println(prefixProto[i] + protoMeasurements[i] + units[i]);
         }
+
+        /*
+        if(args[0].equals("j")) {
+            long[] jsonMeasurements = getJsonMeasurements(args[1], args[2], args[3]);
+            String[] prefixJson = {"JSON Serialization Time is ",
+                    "JSON Serialization Size is ",
+                    "JSON Serialization Rate is ",
+                    "JSON Deserialization Time is ",
+                    "JSON Deserialization Size is ",
+                    "JSON Deserialization Rate is "};
+
+            for(int i = 0; i < jsonMeasurements.length; i++){
+                System.out.println(prefixJson[i] + jsonMeasurements[i] + units[i]);
+            }
+        }else if(args[0].equals("p")) {
+            long[] protoMeasurements = getProtobufMeasurements(args[1], args[2], args[3]);
+            String[] prefixProto = {"Protobuf Serialization Time is ",
+                    "Protobuf Serialization Size is ",
+                    "Protobuf Serialization Rate is ",
+                    "Protobuf Deserialization Time is ",
+                    "Protobuf Deserialization Size is ",
+                    "Protobuf Deserialization Rate is "};
+
+            for(int i = 0; i < protoMeasurements.length; i++){
+                System.out.println(prefixProto[i] + protoMeasurements[i] + units[i]);
+            }
+        }
+         */
     }
 
 }
